@@ -1,0 +1,25 @@
+name: renew-certs
+
+on:
+  schedule:
+    - cron: '0 3 1,15 * *'
+  workflow_dispatch:
+
+jobs:
+  renew:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Renew and reload
+        env:
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          mkdir -p certbot/conf
+          umask 077
+          printf 'dns_cloudflare_api_token = %s\n' "$CLOUDFLARE_API_KEY" > certbot/cloudflare.ini
+          docker compose run --rm certbot renew
+          docker compose exec -T nginx nginx -s reload || docker compose up -d nginx

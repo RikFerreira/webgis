@@ -1,0 +1,57 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          clean: false
+      
+      - name: Update git submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          git config --file .gitmodules --get-regexp 'submodule\..*\.path' \
+            | awk '{print $2}' \
+            | grep '^services/' \
+            | while read path; do
+                git submodule update --remote "$path"
+                git -C "$path" submodule sync --recursive
+                git -C "$path" submodule update --init --recursive
+              done
+
+      - name: Ensure SSL certificates
+        env:
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+        run: |
+          mkdir -p certbot/conf
+          umask 077
+          printf 'dns_cloudflare_api_token = %s\n' "$CLOUDFLARE_API_KEY" > certbot/cloudflare.ini
+          if [ ! -f certbot/conf/live/rikalves.com/fullchain.pem ]; then
+            docker compose run --rm certbot certonly \
+              --dns-cloudflare --dns-cloudflare-credentials /cloudflare.ini \
+              --dns-cloudflare-propagation-seconds 30 \
+              -d rikalves.com -d '*.rikalves.com' \
+              --agree-tos -m "$CERTBOT_EMAIL" --non-interactive
+          fi
+
+      - name: Materialize secrets
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          umask 077
+          printf 'POSTGRES_DB=%s\nPOSTGRES_USER=%s\nPOSTGRES_PASSWORD=%s\n' \
+            "$POSTGRES_DB" "$POSTGRES_USER" "$POSTGRES_PASSWORD" > .env
+
+      - name: Deploy
+        run: docker compose up -d --build --force-recreate
