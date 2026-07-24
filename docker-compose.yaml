@@ -34,6 +34,15 @@ services:
     networks:
       - private
 
+  geohub:
+    image: ghcr.io/rikferreira/geohub:sha-be3a03df96de4d19c3319c19ae1828b169f9909d
+    restart: unless-stopped
+    environment:
+      ARCGIS_USERNAME: ${ARCGIS_USERNAME}
+      ARCGIS_PASSWORD: ${ARCGIS_PASSWORD}
+    networks:
+      - private
+
 volumes:
   pgdata:
     driver: local

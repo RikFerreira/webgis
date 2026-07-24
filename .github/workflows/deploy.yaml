@@ -48,10 +48,13 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          ARCGIS_USERNAME: ${{ secrets.ARCGIS_USERNAME }}
+          ARCGIS_PASSWORD: ${{ secrets.ARCGIS_PASSWORD }}
         run: |
           umask 077
-          printf 'POSTGRES_DB=%s\nPOSTGRES_USER=%s\nPOSTGRES_PASSWORD=%s\n' \
-            "$POSTGRES_DB" "$POSTGRES_USER" "$POSTGRES_PASSWORD" > .env
+          printf 'POSTGRES_DB=%s\nPOSTGRES_USER=%s\nPOSTGRES_PASSWORD=%s\nARCGIS_USERNAME=%s\nARCGIS_PASSWORD=%s\n' \
+            "$POSTGRES_DB" "$POSTGRES_USER" "$POSTGRES_PASSWORD" \
+            "$ARCGIS_USERNAME" "$ARCGIS_PASSWORD" > .env
 
       - name: Deploy
         run: docker compose up -d --build --force-recreate
