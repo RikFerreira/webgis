@@ -35,7 +35,7 @@ services:
       - private
 
   geohub:
-    image: ghcr.io/rikferreira/geohub:sha-ac381db028f4babbadba4e812e462bd7cce661f4
+    image: ghcr.io/rikferreira/geohub:sha-00197199a0de293027ff613e5cc9c2bf4bf1d1d5
     restart: unless-stopped
     environment:
       ARCGIS_USERNAME: ${ARCGIS_USERNAME}
