@@ -1,6 +1,7 @@
 services:
   nginx:
     image: nginx:alpine
+    pull_policy: always
     container_name: nginx
     restart: always
     ports:
@@ -17,6 +18,9 @@ services:
 
   certbot:
     image: certbot/dns-cloudflare
+    # untagged, so :latest. This one talks to the ACME and Cloudflare APIs on a
+    # cron — a copy cached months ago fails renewal long after anyone is looking.
+    pull_policy: always
     profiles: ["certbot"]
     volumes:
       - ./certbot/conf:/etc/letsencrypt
