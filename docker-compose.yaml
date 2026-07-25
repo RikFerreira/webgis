@@ -36,7 +36,7 @@ services:
 
   geohub:
     image: ghcr.io/rikferreira/geohub:latest
-    restart: unless-stopped
+    restart: always
     environment:
       ARCGIS_USERNAME: ${ARCGIS_USERNAME}
       ARCGIS_PASSWORD: ${ARCGIS_PASSWORD}
