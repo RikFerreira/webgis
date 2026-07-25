@@ -57,4 +57,4 @@ jobs:
             "$ARCGIS_USERNAME" "$ARCGIS_PASSWORD" > .env
 
       - name: Deploy
-        run: docker compose up -d --build --force-recreate
+        run: docker compose up -d --force-recreate

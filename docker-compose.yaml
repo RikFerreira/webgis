@@ -36,6 +36,9 @@ services:
 
   geohub:
     image: ghcr.io/rikferreira/geohub:latest
+    # :latest is mutable, so a cached copy pins the host to whatever it pulled
+    # first. --force-recreate recreates the container, not the image.
+    pull_policy: always
     restart: always
     environment:
       ARCGIS_USERNAME: ${ARCGIS_USERNAME}
