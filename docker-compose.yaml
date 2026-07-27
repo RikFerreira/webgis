@@ -39,7 +39,7 @@ services:
       - private
 
   geohub:
-    image: ghcr.io/rikferreira/geohub:sha-0d7f14155ab73856b8beee1e64f0987a4e05ebb7
+    image: ghcr.io/rikferreira/geohub:sha-e3db5b0d5b53353035f5e1edfe93836db6d3894b
     # :latest is mutable, so a cached copy pins the host to whatever it pulled
     # first. --force-recreate recreates the container, not the image.
     pull_policy: always
