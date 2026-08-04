@@ -39,7 +39,7 @@ services:
       - private
 
   wsnet:
-    image: ghcr.io/rikferreira/wsnet:sha-64ef5e6acfee6d11aa0d5aec59d53e586ffb7be0
+    image: ghcr.io/rikferreira/wsnet:sha-0c73810e02f627b838e9841c5713ab4f221ee066
     # :latest is mutable, so a cached copy pins the host to whatever it pulled
     # first. --force-recreate recreates the container, not the image.
     pull_policy: always
