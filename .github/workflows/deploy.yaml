@@ -15,6 +15,9 @@ jobs:
           clean: false
       
       - name: Update git submodules
+        # No submodules at the moment; without the guard the step errors out on
+        # the missing .gitmodules every run.
+        if: hashFiles('.gitmodules') != ''
         run: |
           git submodule sync --recursive
           git submodule update --init --recursive

@@ -1,3 +1,0 @@
-[submodule "services/blog"]
-	path = services/blog
-	url = https://github.com/RikFerreira/blog

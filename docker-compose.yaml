@@ -13,8 +13,16 @@ services:
     volumes:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./services/nginx/servers.conf:/etc/nginx/conf.d/servers.conf:ro
-      - ./services/blog:/usr/share/nginx/html:ro
       - ./certbot/conf:/etc/letsencrypt:ro
+
+  blog:
+    image: ghcr.io/rikferreira/blog:sha-b2ba998
+    # The image carries the rendered Hugo site behind its own nginx on :80, so
+    # new content is a new tag here rather than a submodule bump.
+    pull_policy: always
+    restart: always
+    networks:
+      - private
 
   certbot:
     image: certbot/dns-cloudflare
